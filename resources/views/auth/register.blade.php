@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Login</title>
+    <title>Register</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -18,6 +18,17 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/css/style-preset.css') }}" />
 </head>
+
+<style>
+.toggle-password {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+</style>
+
 
 <body>
 
@@ -38,11 +49,11 @@
                         @endif
 
                         <div class="auth-header text-center">
-                            <h2 class="text-secondary mt-5"><b>Hi, Welcome Back</b></h2>
+                            <h2 class="text-secondary mt-5"><b>Register Here</b></h2>
                             <p class="f-16 mt-2">Enter your credentials to continue</p>
                         </div>
 
-                        <form action="/login" method="post">
+                        <form action="/register" method="post">
                             @csrf
                             <div class="d-grid">
                                 <button type="button" class="btn mt-2 bg-light-primary bg-light text-muted">
@@ -64,43 +75,43 @@
                                 <small class="text-danger">{{ $message }}</small>
                             @enderror
 
+                            <div class="form-floating mb-3">
+                                <input type="name" name="name" class="form-control" id="name"
+                                    placeholder="Your Name" required>
+                                <label for="name">Name</label>
+                            </div>
+                            @error('name')
+                                <small class="text-danger">{{ $message }}</small>
+                            @enderror
+
+                            <!-- PASSWORD -->
                             <div class="form-floating mb-3 position-relative">
                                 <input type="password" name="password" class="form-control" id="password"
                                     placeholder="Password" required>
                                 <label for="password">Password</label>
 
-                                <!-- ICON MATA -->
-                                <span id="togglePassword"
-                                    style="
-                                position: absolute;
-                                top: 50%;
-                                right: 15px;
-                                transform: translateY(-50%);
-                                cursor: pointer;">
+                                <span class="toggle-password" data-target="password">
                                     <i class="fas fa-eye"></i>
                                 </span>
                             </div>
-                            @error('password')
-                                <small class="text-danger">{{ $message }}</small>
-                            @enderror
 
-                            <!-- FORGOT PASSWORD (TETAP ADA) -->
-                            <div class="text-end mb-3">
-                                {{-- <a href="{{ route('password.request') }}" class="text-muted"> --}}
-                                Forgot password?
-                                </a>
+                            <!-- CONFIRM PASSWORD -->
+                            <div class="form-floating mb-3 position-relative">
+                                <input type="password" name="confirm_password" class="form-control"
+                                    id="confirm_password" placeholder="Password Confirmation" required>
+                                <label for="confirm_password">Confirm Password</label>
+
+                                <span class="toggle-password" data-target="confirm_password">
+                                    <i class="fas fa-eye"></i>
+                                </span>
                             </div>
 
                             <div class="d-grid mt-4">
                                 <button type="submit" class="btn btn-secondary">
-                                    Sig In
+                                    Register
                                 </button>
                             </div>
                         </form>
-
-                        <hr />
-                        <h6 class="text-center">Don't have an account? <a href="/register">Register Here</a></h6>
-
                     </div>
                 </div>
             </div>
@@ -112,22 +123,23 @@
     <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
 
     <script>
-        const togglePassword = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('password');
-        const icon = togglePassword.querySelector('i');
+    document.querySelectorAll('.toggle-password').forEach(toggle => {
+        toggle.addEventListener('click', function () {
+            const input = document.getElementById(this.dataset.target);
+            const icon = this.querySelector('i');
 
-        togglePassword.addEventListener('click', function() {
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
+            if (input.type === 'password') {
+                input.type = 'text';
                 icon.classList.remove('fa-eye');
                 icon.classList.add('fa-eye-slash');
             } else {
-                passwordInput.type = 'password';
+                input.type = 'password';
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
             }
         });
-    </script>
+    });
+</script>
 
 </body>
 
