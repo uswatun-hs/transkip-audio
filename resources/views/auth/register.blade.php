@@ -20,18 +20,17 @@
 </head>
 
 <style>
-.toggle-password {
-    position: absolute;
-    top: 50%;
-    right: 15px;
-    transform: translateY(-50%);
-    cursor: pointer;
-}
+    .toggle-password {
+        position: absolute;
+        top: 50%;
+        right: 15px;
+        transform: translateY(-50%);
+        cursor: pointer;
+    }
 </style>
 
 
 <body>
-
     <div class="auth-main">
         <div class="auth-wrapper v3">
             <div class="auth-form">
@@ -50,7 +49,7 @@
 
                         <div class="auth-header text-center">
                             <h2 class="text-secondary mt-5"><b>Register Here</b></h2>
-                            <p class="f-16 mt-2">Enter your credentials to continue</p>
+                            <p class="f-16 mt-2">Create an account to get started</p>
                         </div>
 
                         <form action="/register" method="post">
@@ -64,11 +63,11 @@
                             <div class="saprator mt-3">
                                 <span>or</span>
                             </div>
-                            <h5 class="my-4 text-center">Sign in with Email address</h5>
+                            <h5 class="my-4 text-center">Register with Email address</h5>
 
                             <div class="form-floating mb-3">
                                 <input type="email" name="email" class="form-control" id="email"
-                                    placeholder="Email address" required>
+                                    placeholder="Email address" required value="{{ old('email') }}">
                                 <label for="email">Email address</label>
                             </div>
                             @error('email')
@@ -77,7 +76,7 @@
 
                             <div class="form-floating mb-3">
                                 <input type="name" name="name" class="form-control" id="name"
-                                    placeholder="Your Name" required>
+                                    value="{{ old('name') }}" placeholder="Your Name" required>
                                 <label for="name">Name</label>
                             </div>
                             @error('name')
@@ -110,9 +109,14 @@
                                 <button type="submit" class="btn btn-secondary">
                                     Register
                                 </button>
+                                {{-- <p class="mb-1">
+                                    already have an account?<a href="/login" class="text-center">Login here!</a>
+                                </p> --}}
                             </div>
                         </form>
                     </div>
+                    <hr />
+                        <h6 class="text-center">Already have an account? <a href="/login">Login Here!</a></h6>
                 </div>
             </div>
         </div>
@@ -123,23 +127,23 @@
     <script src="{{ asset('assets/js/plugins/bootstrap.min.js') }}"></script>
 
     <script>
-    document.querySelectorAll('.toggle-password').forEach(toggle => {
-        toggle.addEventListener('click', function () {
-            const input = document.getElementById(this.dataset.target);
-            const icon = this.querySelector('i');
+        document.querySelectorAll('.toggle-password').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const input = document.getElementById(this.dataset.target);
+                const icon = this.querySelector('i');
 
-            if (input.type === 'password') {
-                input.type = 'text';
-                icon.classList.remove('fa-eye');
-                icon.classList.add('fa-eye-slash');
-            } else {
-                input.type = 'password';
-                icon.classList.remove('fa-eye-slash');
-                icon.classList.add('fa-eye');
-            }
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
         });
-    });
-</script>
+    </script>
 
 </body>
 
