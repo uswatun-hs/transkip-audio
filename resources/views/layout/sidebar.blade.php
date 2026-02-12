@@ -108,27 +108,16 @@
                         <div class="dropdown-header">
                             <h4>
                                 Hello,
-                                <a href="#" class="d-block">{{ auth()->user()->name }}</a>
+                                <a href="#" class="d-block">{{ auth()->user()->role }}</a>
 
                             </h4>
-                            <p class="text-muted">Project Admin</p>
+                            <p class="text-muted">{{ auth()->user()->name }}</p>
                             <hr />
                             <div class="profile-notification-scroll position-relative"
                                 style="max-height: calc(100vh - 280px)">
-                                <div class="upgradeplan-block bg-light-warning rounded">
-                                    <h4>Explore full code</h4>
-                                    <p class="text-muted">Buy now to get full access of code files</p>
-                                    <a href="https://codedthemes.com/item/berry-bootstrap-5-admin-template/"
-                                        target="_blank" class="btn btn-warning">Buy Now</a>
-                                </div>
-                                <hr />
                                 <a href="{{ asset('application/account-profile-v1.html') }}" class="dropdown-item">
                                     <i class="ti ti-settings"></i>
                                     <span>Account Settings</span>
-                                </a>
-                                <a href="{{ asset('application/social-profile.html') }}" class="dropdown-item">
-                                    <i class="ti ti-user"></i>
-                                    <span>Social Profile</span>
                                 </a>
                                 <a href="/logout" class="dropdown-item">
                                     <i class="ti ti-logout"></i>

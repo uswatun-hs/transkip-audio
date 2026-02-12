@@ -89,8 +89,8 @@
 
                             <!-- FORGOT PASSWORD (TETAP ADA) -->
                             <div class="text-end mb-3">
-                                {{-- <a href="{{ route('password.request') }}" class="text-muted"> --}}
-                                Forgot password?
+                                <a href="{{ route('forgot-password') }}" class="text-muted">
+                                    Forgot password?
                                 </a>
                             </div>
 
@@ -131,6 +131,29 @@
             }
         });
     </script>
+
+    <script src="{{ asset('switchalert/dist/sweetalert2.all.js') }}"></script>
+
+    @session('success')
+        <script>
+            Swal.fire({
+                title: "Success!",
+                text: "{{ session('success') }}",
+                icon: "success"
+            });
+        </script>
+    @endsession
+
+    @session('failed')
+        <script>
+            Swal.fire({
+                title: "Gagal",
+                text: "{{ session('error') }}",
+                icon: "Gagal"
+            });
+        </script>
+    @endsession
+
 
 </body>
 

@@ -3,7 +3,7 @@
 <!-- [Head] start -->
 
 <head>
-    <title>Dashboard Transkip</title>
+    <title>Transkip Audio {{ $title }}</title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
@@ -109,6 +109,8 @@
     <script>
         preset_change('preset-1');
     </script>
+
+    <script src="{{ asset('switchalert/dist/sweetalert2.all.js') }}"></script>
 
 
 
