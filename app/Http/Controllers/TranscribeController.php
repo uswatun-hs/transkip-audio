@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transcribe;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
-use PhpOffice\PhpWord\PhpWord;
 use PhpOffice\PhpWord\IOFactory;
-use Barryvdh\DomPDF\Facade\Pdf;
+use PhpOffice\PhpWord\PhpWord;
 
 class TranscribeController extends Controller
 {
@@ -17,45 +18,58 @@ class TranscribeController extends Controller
     }
 
     public function upload(Request $request)
-    {
-        $request->validate([
-            'audio' => 'required|file|mimes:mp3,wav,webm,mp4'
-        ]);
+{
+    $request->validate([
+        'audio' => 'required|file|mimes:mp3,wav,webm,mp4'
+    ]);
 
-        // simpan audio
-        $path = $request->file('audio')->store('audio');
+    // ambil file dulu
+    $file = $request->file('audio');
 
-        try {
-            $response = Http::timeout(300)
-                ->attach(
-                    'file',
-                    Storage::get($path),
-                    basename($path)
-                )
-                ->post('http://127.0.0.1:8000/transcribe');
+    // simpan audio
+    $path = $file->store('audio');
 
-            if ($response->failed()) {
-                throw new \Exception('FastAPI error');
-            }
+    try {
+        $response = Http::timeout(300)
+            ->attach(
+                'file',
+                Storage::get($path),
+                basename($path)
+            )
+            ->post('http://127.0.0.1:8000/transcribe');
 
-            $data = $response->json();
-
-            if (!isset($data['text'])) {
-                throw new \Exception('Text tidak ditemukan');
-            }
-
-            $text = $data['text'];
-
-        } catch (\Exception $e) {
-            Storage::delete($path);
-            return back()->with('error', 'Gagal melakukan transkripsi');
+        if ($response->failed()) {
+            throw new \Exception('FastAPI error');
         }
 
-        // hapus audio setelah dipakai
-        Storage::delete($path);
+        $data = $response->json();
 
-        return view('result', compact('text'));
+        if (!isset($data['text'])) {
+            throw new \Exception('Text tidak ditemukan');
+        }
+
+        $text = $data['text'];
+
+    } catch (\Exception $e) {
+        Storage::delete($path);
+        return back()->with('error', 'Gagal melakukan transkripsi');
     }
+
+    // ambil nama asli file
+    $file = $request->file('audio');
+    $originalName = $file->getClientOriginalName();
+
+    Transcribe::create([
+        'user_id' => auth()->id(),
+        'file_name' => $originalName,
+        'result' => $text
+    ]);
+
+    Storage::delete($path);
+
+    return view('result', compact('text'));
+}
+
 
     public function exportWord(Request $request)
     {
@@ -82,3 +96,5 @@ class TranscribeController extends Controller
         return $pdf->download('transkrip.pdf');
     }
 }
+
+

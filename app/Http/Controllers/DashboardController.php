@@ -2,15 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\User;
 
 class DashboardController extends Controller
 {
-    public function index(){
-        $data = array(
-            "title" => "Dashboard",
-        );
-        return view('dashboard', $data);
-        // return view('dashboard');
+    public function index()
+    {
+        $totalUsers = User::count();
+        $totalAdmin = User::where('role', 'admin')->count();
+        $totalStaff = User::where('role', 'staff')->count();
+        $totalPending = User::whereNull('email_verified_at')->count();
+
+        return view('dashboard', compact(
+            'totalUsers',
+            'totalAdmin',
+            'totalStaff',
+            'totalPending'
+        ));
     }
+
 }

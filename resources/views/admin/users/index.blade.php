@@ -1,146 +1,138 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
-</head>
+@extends('layout.master')
+@section('content')
+    <div class="container-fluid py-4">
 
-<style>
-    .custom-table thead {
-    background-color: #f8f9fa;
-    font-weight: 600;
-}
+        <div class="card border-0 shadow-lg rounded-4">
+            <div class="card-body p-4">
 
-.custom-table tbody tr {
-    transition: all 0.2s ease;
-}
+                <!-- HEADER -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h4 class="fw-bold mb-1">User Management</h4>
+                        <small class="text-muted">Manage all registered users</small>
+                    </div>
 
-.custom-table tbody tr:hover {
-    background-color: #f1f3f7;
-}
+                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary rounded-pill px-4 shadow-sm">
+                        <i class="fa fa-plus me-2"></i> Add User
+                    </a>
+                </div>
 
-.avatar-circle {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #5e72e4, #825ee4);
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: bold;
-}
+                <!-- ALERT -->
+                @if (session('success'))
+                    <div class="alert alert-success border-0 shadow-sm rounded-3">
+                        <i class="fa fa-check-circle me-2"></i>
+                        {{ session('success') }}
+                    </div>
+                @endif
 
-</style>
-<body>
+                @if (session('error'))
+                    <div class="alert alert-danger border-0 shadow-sm rounded-3">
+                        <i class="fa fa-times-circle me-2"></i>
+                        {{ session('error') }}
+                    </div>
+                @endif
 
-    <div class="card-body">
+                <!-- TABLE -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
 
-        <div class="card border-0 shadow rounded-4">
-    <div class="card-body p-4">
+                        <thead class="bg-light">
+                            <tr>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th class="text-center">Action</th>
+                            </tr>
+                        </thead>
 
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h4 class="fw-bold mb-1">User Management</h4>
-                <p class="text-muted small mb-0">Manage all registered users</p>
+                        <tbody>
+                            @foreach ($users as $key => $user)
+                                <tr>
+
+                                    <td>{{ $key + 1 }}</td>
+
+                                    <td>
+                                        <div class="fw-semibold">
+                                            {{ $user->name }}
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <small class="text-muted">
+                                            {{ $user->email }}
+                                        </small>
+                                    </td>
+
+                                    <td>
+                                        @if ($user->role == 'admin')
+                                            <span class="badge bg-danger rounded-pill px-3">
+                                                Admin
+                                            </span>
+                                        @elseif($user->role == 'staff')
+                                            <span class="badge bg-info rounded-pill px-3">
+                                                Staff
+                                            </span>
+                                        @else
+                                            <span class="badge bg-success rounded-pill px-3">
+                                                User
+                                            </span>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if ($user->email_verified_at)
+                                            <span class="badge bg-success-subtle text-success rounded-pill px-3">
+                                                Active
+                                            </span>
+                                        @else
+                                            <span class="badge bg-warning-subtle text-warning rounded-pill px-3">
+                                                Pending
+                                            </span>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        {{ $user->created_at->format('d M Y') }}
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (auth()->user()->role == 'admin')
+                                            <a href="{{ route('admin.users.edit', $user->id) }}"
+                                                class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                                <i class="fa fa-edit me-1"></i>
+                                                Edit
+                                            </a>
+
+                                            <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                                class="d-inline"
+                                                onsubmit="return confirm('Yakin ingin menghapus user ini?')">
+                                                @csrf
+                                                @method('DELETE')
+
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                    <i class="fa fa-trash me-1"></i>
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        @else
+                                            <span class="text-muted small">View Only</span>
+                                        @endif
+
+                                    </td>
+
+                                </tr>
+                            @endforeach
+                        </tbody>
+
+                    </table>
+                </div>
+
             </div>
-            <a href="#" class="btn btn-primary rounded-3 px-3">
-                <i class="ti ti-plus me-1"></i> Add User
-            </a>
-        </div>
-
-        <div class="table-responsive">
-            <table id="userTable" class="table table-hover align-middle custom-table">
-
-            {{-- <table id="userTable" class="table align-middle custom-table"> --}}
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>User</th>
-                        <th>Role</th>
-                        <th>Status</th>
-                        <th>Joined</th>
-                        <th class="text-end">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($users as $key => $user)
-                    <tr>
-                        <td>{{ $key + 1 }}</td>
-
-                        <td>
-                            <div class="d-flex align-items-center">
-                                <div class="avatar-circle me-3">
-                                    {{ strtoupper(substr($user->name,0,1)) }}
-                                </div>
-                                <div>
-                                    <h6 class="mb-0 fw-semibold">{{ $user->name }}</h6>
-                                    <small class="text-muted">{{ $user->email }}</small>
-                                </div>
-                            </div>
-                        </td>
-
-                        <td>
-                            @if($user->role == 'admin')
-                                <span class="badge bg-danger-subtle text-danger px-3 py-2 rounded-pill">
-                                    Admin
-                                </span>
-                            @elseif($user->role == 'staff')
-                                <span class="badge bg-info-subtle text-info px-3 py-2 rounded-pill">
-                                    Staff
-                                </span>
-                            @else
-                                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill">
-                                    User
-                                </span>
-                            @endif
-                        </td>
-
-                        <td>
-                            @if($user->email_verified_at)
-                                <span class="badge bg-success">Active</span>
-                            @else
-                                <span class="badge bg-warning text-dark">Pending</span>
-                            @endif
-                        </td>
-
-                        <td>
-                            {{ $user->created_at->format('d M Y') }}
-                        </td>
-
-                        <td class="text-end">
-                            <button class="btn btn-sm btn-light-primary rounded-3">
-                                <i class="ti ti-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-light-danger rounded-3">
-                                <i class="ti ti-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
         </div>
 
     </div>
-</div>
-
-
-    </div>
-</div>
-<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
-
-<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
-
-<script>
-$(document).ready(function () {
-    $('#userTable').DataTable();
-});
-</script>
-
-</body>
-</html>
+@endsection

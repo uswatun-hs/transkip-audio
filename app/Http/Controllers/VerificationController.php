@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Mail\OtpEmail;
 use App\Models\User;
 use App\Models\Verification;
-use App\Mail\OtpEmail;
-use Illuminate\Support\Facades\Mail;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 
 class VerificationController extends Controller
@@ -60,4 +61,36 @@ class VerificationController extends Controller
         }
         //     return redirect('/reset-password)
     }
+
+    public function resend(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return back()->with('failed', 'User not found.');
+        }
+
+        // Nonaktifkan OTP lama (ubah jadi invalid)
+        Verification::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->update(['status' => 'invalid']);
+
+        // Generate OTP baru
+        $otp = rand(100000, 999999);
+
+        $verify = Verification::create([
+            'user_id'   => $user->id,
+            'unique_id' => uniqid(),
+            'otp'       => md5($otp),
+            'type'      => $request->type ?? 'register',
+            'send_via'  => 'email',
+            'status'    => 'active'
+        ]);
+
+        Mail::to($user->email)->queue(new OtpEmail($otp));
+
+        return redirect('/verify/' . $verify->unique_id)
+            ->with('success', 'OTP berhasil dikirim ulang!');
+    }
+
 }

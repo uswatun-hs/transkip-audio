@@ -55,10 +55,12 @@
                         <form action="/register" method="post">
                             @csrf
                             <div class="d-grid">
-                                <button type="button" class="btn mt-2 bg-light-primary bg-light text-muted">
-                                    <img src="../assets/images/authentication/google-icon.svg" alt="image" />Sign In
-                                    With Google
-                                </button>
+                                <a href="/auth-google-redirect"
+                                    class="btn mt-2 bg-light-primary bg-light text-muted d-flex align-items-center justify-content-center gap-2">
+                                    <img src="{{ asset('assets/images/authentication/google-icon.svg') }}"
+                                        alt="Google" />
+                                    Sign In With Google
+                                </a>
                             </div>
                             <div class="saprator mt-3">
                                 <span>or</span>

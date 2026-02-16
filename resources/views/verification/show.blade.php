@@ -71,9 +71,13 @@
                             </div>
                         </form>
 
-                       <p class="mb-0">
-                        <a href="#!" class="text-center">Resend OTP</a>
-                       </p>
+                        <form action="{{ route('verify.resend') }}" method="POST" class="mt-3 text-center">
+                            @csrf
+                            <button type="submit" class="btn btn-link p-0">
+                                Resend OTP
+                            </button>
+                        </form>
+
 
                     </div>
                 </div>

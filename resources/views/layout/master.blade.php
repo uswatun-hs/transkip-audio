@@ -3,7 +3,7 @@
 <!-- [Head] start -->
 
 <head>
-    <title>Transkip Audio {{ $title }}</title>
+    <title>Transkip Audio </title>
     <!-- [Meta] -->
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui" />
@@ -53,7 +53,10 @@
     <!-- [ Header ] end -->
 
     <!-- [ Main Content ] start -->
+
     @yield('content')
+
+
     <!-- [ Main Content ] end -->
     <footer class="pc-footer">
         <div class="footer-wrapper container-fluid">

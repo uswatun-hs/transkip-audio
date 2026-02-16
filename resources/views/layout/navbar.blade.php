@@ -14,28 +14,30 @@
                         class="pc-link {{ request()->is('dashboard') ? 'active' : '' }}"><span class="pc-micon"><i
                                 class="ti ti-dashboard"></i></span><span class="pc-mtext">Dashboard</span></a>
                 </li>
+                @auth
+                    @if (auth()->user()->role == 'admin' || auth()->user()->role == 'staff')
+                        <li class="pc-item">
+                            <a href="{{ route('admin.users.index') }}"
+                                class="pc-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">
+                                <span class="pc-micon"><i class="ti ti-users"></i></span>
+                                <span class="pc-mtext">User</span>
+                            </a>
+                        </li>
+                    @endif
+                @endauth
 
-                @if (auth()->user()->role == 'admin' || auth()->user()->role == 'staff')
-                    <li class="pc-item">
-                        <a href="{{ route('admin.users') }}"
-                            class="pc-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
-
-                            <span class="pc-micon"><i class="ti ti-typography"></i></span>
-                            <span class="pc-mtext">User</span>
-                        </a>
-                    </li>
-                @endif
 
                 <li class="pc-item">
-                    <a href="{{ asset('elements/bc_typography.html') }}" class="pc-link">
+                    <a href="{{ route('upload') }}" class="pc-link">
                         <span class="pc-micon"><i class="ti ti-typography"></i></span>
-                        <span class="pc-mtext">Typography</span>
+                        <span class="pc-mtext">Transkip</span>
                     </a>
                 </li>
+
                 <li class="pc-item">
-                    <a href="{{ asset('elements/bc_color.html') }}" class="pc-link">
+                    <a href="{{ route('history.index') }}" class="pc-link">
                         <span class="pc-micon"><i class="ti ti-color-swatch"></i></span>
-                        <span class="pc-mtext">Color</span>
+                        <span class="pc-mtext">History</span>
                     </a>
                 </li>
                 <li class="pc-item">
